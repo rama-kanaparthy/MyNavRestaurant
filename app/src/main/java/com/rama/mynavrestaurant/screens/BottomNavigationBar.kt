@@ -1,9 +1,8 @@
 package com.rama.mynavrestaurant.screens
 
-import androidx.compose.material.BottomNavigation
-import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 
@@ -12,12 +11,9 @@ val screens = listOf(Screen.Home, Screen.Explore, Screen.Restaurants)
 @Composable
 fun BottomNavigationBar(onNavigate: (screen: Screen) -> Unit) {
 
-    BottomNavigation (
-        backgroundColor = MaterialTheme.colorScheme.primaryContainer
-    ) {
-
+    NavigationBar  {
         screens.forEach { screen ->
-            BottomNavigationItem(
+            NavigationBarItem(
                 icon = {
                     Icon(screen.icon, contentDescription = null)
                 },
