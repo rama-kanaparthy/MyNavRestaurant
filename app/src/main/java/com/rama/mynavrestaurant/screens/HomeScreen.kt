@@ -5,7 +5,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -22,10 +21,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.rama.mynavrestaurant.R
 
-
 @Composable
 fun HomeScreen(
-    contentPadding: PaddingValues,
     onTitleChanged: (String) -> Unit,
     onNavigateToExplore: () -> Unit,
 ) {
@@ -33,8 +30,7 @@ fun HomeScreen(
 
     Box(
         modifier = Modifier
-            .fillMaxSize()
-            .padding(contentPadding),
+            .fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
         Image(
@@ -71,3 +67,4 @@ fun HomeScreen(
         }
     }
 }
+

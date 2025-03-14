@@ -1,56 +1,88 @@
 package com.rama.mynavrestaurant.navigation
 
-
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.navigation.NavType
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
+import com.rama.mynavrestaurant.screens.BottomNavigationBar
 import com.rama.mynavrestaurant.screens.ExploreScreen
 import com.rama.mynavrestaurant.screens.HomeScreen
 import com.rama.mynavrestaurant.screens.RestaurantsScreen
+import com.rama.mynavrestaurant.screens.Screen
 
-sealed class Screen(val route: String) {
-    object Home : Screen("home")
-    object Explore : Screen("explore")
-    object Restaurant : Screen("restaurant")
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun RestaurantApp() {
+    val navController = rememberNavController()
+    var appBarTitle = remember { mutableStateOf("") }
+
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        appBarTitle.value,
+                        color = MaterialTheme.colorScheme.onPrimary
+                    )
+                },
+                colors = TopAppBarDefaults.mediumTopAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primary
+                )
+            )
+        },
+        bottomBar = {
+            BottomNavigationBar(onNavigate = {
+                    screen: Screen -> navController.navigate(screen.route)
+            }
+            )
+        }
+    ) {
+            contentPadding -> NavigationGraph(navController, contentPadding) {
+            title -> appBarTitle.value = title
+    }
+    }
 }
 
+
 @Composable
-fun NavigationGraph(contentPadding: PaddingValues, onTitleChanged: (String) -> Unit) {
+fun NavigationGraph(
+    navController: NavHostController,
+    contentPadding: PaddingValues,
+    onTitleChanged: (String) -> Unit
+) {
 
-    val navController = rememberNavController()
-
-    NavHost(navController = navController, startDestination = Screen.Home.route) {
+    NavHost(
+        navController = navController,
+        startDestination = Screen.Home.route,
+        modifier = Modifier.padding(contentPadding)
+    ) {
         composable(Screen.Home.route) {
             HomeScreen(
-                contentPadding,
                 onTitleChanged = onTitleChanged,
-                onNavigateToExplore = {
-                    navController.navigate(Screen.Explore.route)
-                }
+                onNavigateToExplore = { navController.navigate(Screen.Explore.route) }
             )
         }
         composable(Screen.Explore.route) {
             ExploreScreen(
-                contentPadding,
                 onTitleChanged = onTitleChanged,
-                onNavigateToRestaurant = {
-                        name -> navController.navigate(
-                    "${Screen.Restaurant.route}/$name")
-                }
+                onNavigateToRestaurants = { navController.navigate(Screen.Restaurants.route) }
             )
         }
-        composable(
-            "${Screen.Restaurant.route}/{name}",
-            arguments = listOf(navArgument("name") { type = NavType.StringType })
-        ) {
-                backStackEntry->
+        composable(Screen.Restaurants.route) {
             RestaurantsScreen(
-                contentPadding,
-                restaurantName = backStackEntry.arguments?.getString("name"),
                 onTitleChanged = onTitleChanged,
                 onNavigateToExplore = { navController.navigate(Screen.Explore.route) }
             )
